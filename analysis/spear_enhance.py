@@ -15,7 +15,7 @@ import soundfile as sf
 from SPEAR import *
 from Processor import *
 
-def spear_enhance(input_root, output_dir, list_cases=[], method_name='baseline'):
+def spear_enhance(input_root, output_dir, list_cases=[], method_name='baseline',wavpath=None):
     """
     input_root: folder to find SPEAR data
     output_root: folder to save processed audio
@@ -34,7 +34,7 @@ def spear_enhance(input_root, output_dir, list_cases=[], method_name='baseline')
     Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     print('Setting up Dataset...')
-    sp = SPEAR_Data(input_root)
+    sp = SPEAR_Data(input_root,wavpath=wavpath)
 
     if method_name == 'baseline':
         print('Setting up Processor...')
@@ -116,6 +116,8 @@ if __name__ == '__main__':
     parser.add_argument("-m","--method_name",
                         help="enhancement algorithm to use: [baseline] or passthrough",
                         default='baseline')                   
+    parser.add_argument("--wavpath", type=str,
+                        default=None)
     args = parser.parse_args()
     print(args)
     
@@ -125,4 +127,4 @@ if __name__ == '__main__':
     if len(list_cases) > 3:
         raise ValueError('list cases must have a maximum of 3 items')
 
-    spear_enhance(args.input_root, args.output_root, list_cases=list_cases, method_name=args.method_name)
+    spear_enhance(args.input_root, args.output_root, list_cases=list_cases, method_name=args.method_name,wavpath=args.wavpath)

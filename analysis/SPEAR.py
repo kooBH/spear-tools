@@ -23,7 +23,6 @@ class SPEAR_Data:
     total_sources = 7 # total number of possible participants
     wearer_ID = 2 # participant ID wearing the array
 
-        
     root_path = '' # main root path to dataset - where 'Dataset_X' folders are
     # subfolders
     ht_folder = 'Array_Orientation'
@@ -50,12 +49,13 @@ class SPEAR_Data:
     IDs = [] # list of participant IDs present in the file
     src_pos = [] # (dict of cartesian position, keys: source ID) cartesian position relative to the (rotated) array [total_frames x 4] (t,x,y,z) ndarray
     
-    
-    def __init__(obj,inpath):
+    def __init__(obj,inpath,wavpath=None):
         # DESCRIPTION: initialises the class based on SPEAR dataset 
         # *** INPUTS ***
         # inpath    (str) root path to SPEAR dataset        
         obj.root_path = inpath
+        if wavpath is not None : 
+            obj.wavpath = wavpath
         obj.update_folders()
         
     def update_folders(obj):
@@ -72,7 +72,12 @@ class SPEAR_Data:
         
         
         obj.ht_file = os.path.join(obj.root_path,obj.dataset_folder,obj.ht_folder,obj.session_folder,f'ori_{obj.file}.csv')
-        obj.array_file = os.path.join(obj.root_path,obj.dataset_folder,obj.array_folder,obj.session_folder,f'array_{obj.file}.wav')
+
+        if obj.wavpath is None : 
+            obj.array_file = os.path.join(obj.root_path,obj.dataset_folder,obj.array_folder,obj.session_folder,f'array_{obj.file}.wav')
+        else :
+            obj.array_file = os.path.join(obj.wavpath,obj.dataset_folder,obj.array_folder,obj.session_folder,f'array_{obj.file}.wav')
+
         obj.vad_file = os.path.join(obj.root_path,'..','..','Extra',obj.root_path.split(os.sep)[-1],obj.dataset_folder,obj.vad_folder,obj.session_folder,f'vad_{obj.file}.csv')
         obj.load_ht()
         obj.set_participant_IDs()
